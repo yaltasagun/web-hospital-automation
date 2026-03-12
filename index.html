@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Hastane Otomasyonu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>Hospital Management Panel</header>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Hasta Kayıt</h2>
+    <input id="ad" placeholder="Ad">
+    <input id="soyad" placeholder="Soyad">
+    <input id="tc" placeholder="TC">
+    <button id="hastaBtn">Kaydet</button>
+  </div>
+
+  <div class="section">
+    <h2>Randevu Ekle</h2>
+    <input id="randevuTc" placeholder="TC">
+    <input id="tarih" type="date">
+    <button id="randevuBtn">Randevu Ekle</button>
+  </div>
+
+  <div class="section">
+    <h2>Tedavi Geçmişi</h2>
+    <input id="tedaviTc" placeholder="TC">
+    <input id="tedavi" placeholder="Tedavi Açıklaması">
+    <button id="tedaviBtn">Ekle</button>
+  </div>
+
+  <div class="section">
+    <h2>Patient List</h2>
+    <ul id="liste"></ul>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
