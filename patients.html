@@ -5,74 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patients Database</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .table-container {
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e3eaf3;
-        }
-        th {
-            background-color: #4a90e2;
-            color: white;
-            font-weight: 600;
-        }
-        tr:hover {
-            background-color: #f1f7ff;
-        }
-        .status-mark {
-            background-color: #eef2f7;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            font-family: monospace;
-        }
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85em;
-            transition: background 0.2s;
-        }
-        .delete-btn:hover {
-            background-color: #c0392b;
-        }
-        ul, ol {
-            margin: 0;
-            padding-left: 20px;
-            font-size: 0.9em;
-        }
-    </style>
 </head>
 <body>
     <header>Patients Database</header>
     
     <div class="container">
-        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-            <a href="index.html" style="color: #4a90e2; text-decoration: none; font-weight: bold;">🏠 Back to Management Panel</a>
-            <a href="about.html" style="color: #4a90e2; text-decoration: none; font-weight: bold;">ℹ️ About</a>
-        </div>
-
-        <section class="section">
-            <h2>System Information</h2>
-            <p><b>Notice:</b> This table shows all <mark>registered patients</mark> fetched from the local database.</p>
-            <blockquote cite="https://example.com">
-                <q>Precision in data leads to excellence in care.</q>
-            </blockquote>
-        </section>
+        <nav class="sub-nav">
+            <a href="index.html" class="nav-link">🏠 Back to Management Panel</a>
+            <a href="about.html" class="nav-link">ℹ️ About</a>
+        </nav>
 
         <section class="section">
             <h2>Patient Records Table</h2>
@@ -81,6 +22,7 @@
                     <thead>
                         <tr>
                             <th>Full Name</th>
+                            <th>Gender</th>
                             <th>ID Number</th>
                             <th>Appointment Dates</th>
                             <th>Treatment History</th>
@@ -92,77 +34,8 @@
                 </table>
             </div>
         </section>
-
-        <section class="section">
-            <h2>Legend</h2>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <div style="width: 20px; height: 20px; background-color: #4a90e2; border-radius: 4px;"></div>
-                <span>Active Records</span>
-                <div style="width: 20px; height: 20px; background-color: #e74c3c; border-radius: 4px; margin-left: 15px;"></div>
-                <span>Management Actions</span>
-            </div>
-        </section>
     </div>
 
-    <script>
-        // Veriyi localStorage'dan silen fonksiyon
-        const deletePatient = (idNumber) => {
-            if (confirm(`Are you sure you want to delete patient with ID: ${idNumber}?`)) {
-                const data = localStorage.getItem("patients");
-                let patients = data ? JSON.parse(data) : [];
-
-                // Filtreleme yaparak silme işlemi
-                const updatedPatients = patients.filter(p => p.idNumber !== idNumber);
-                
-                // Güncel listeyi kaydet
-                localStorage.setItem("patients", JSON.stringify(updatedPatients));
-                
-                // Tabloyu anlık olarak güncelle
-                displayPatients();
-            }
-        };
-
-        // Tabloyu dolduran fonksiyon
-        const displayPatients = () => {
-            const tableBody = document.getElementById("tableBody");
-            const data = localStorage.getItem("patients");
-            const patients = data ? JSON.parse(data) : [];
-
-            tableBody.innerHTML = "";
-
-            if (patients.length === 0) {
-                tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center; padding: 20px;'>No patients found in the database.</td></tr>";
-                return;
-            }
-
-            patients.forEach(patient => {
-                const row = document.createElement("tr");
-                
-                const appList = patient.appointments && patient.appointments.length > 0 
-                    ? `<ul>${patient.appointments.map(a => `<li>${a}</li>`).join('')}</ul>` 
-                    : "No appointments";
-
-                const treatList = patient.treatments && patient.treatments.length > 0 
-                    ? `<ol>${patient.treatments.map(t => `<li>${t}</li>`).join('')}</ol>` 
-                    : "No treatments";
-
-                row.innerHTML = `
-                    <td><strong>${patient.firstName} ${patient.lastName}</strong></td>
-                    <td><code class="status-mark">${patient.idNumber}</code></td>
-                    <td>${appList}</td>
-                    <td>${treatList}</td>
-                    <td>
-                        <button class="delete-btn" onclick="deletePatient('${patient.idNumber}')">
-                            Delete
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        };
-
-        // Sayfa yüklendiğinde listeyi getir
-        window.onload = displayPatients;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -3,17 +3,15 @@
 }
 
 body {
-    margin: 1;
+    margin: 0;
     font-family: "Segoe UI", sans-serif;
     background: linear-gradient(135deg, #eef2f7, #dbe4f0);
     color: #2c3e50;
-    
     background-image: url('hospital.png'); 
     background-size: cover;
     background-position: center; 
     background-repeat: no-repeat; 
     background-attachment: fixed; 
-
 }
 
 header {
@@ -22,17 +20,27 @@ header {
     padding: 18px 30px;
     font-size: 20px;
     font-weight: 600;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-nav {
+.main-nav {
+    padding: 15px;
+    background: rgba(240, 244, 248, 0.9);
     text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 40px auto;
     padding: 0 20px;
 }
@@ -45,41 +53,46 @@ nav {
     box-shadow: 0 10px 25px rgba(0,0,0,0.06);
 }
 
-.section h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 18px;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
+.radio-group {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 14px;
 }
 
-input {
-    padding: 10px 12px;
+.radio-group label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input[type="text"], 
+input[type="password"], 
+input[type="date"] {
+    padding: 12px;
     border: 1px solid #cfd8e3;
     border-radius: 8px;
     font-size: 14px;
     outline: none;
-    transition: 0.2s;
-}
-
-input:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74,144,226,0.15);
 }
 
 button {
-    padding: 10px 15px;
+    padding: 12px;
     border: none;
     border-radius: 8px;
     background: #4a90e2;
     color: white;
-    font-weight: 500;
+    font-weight: bold;
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.3s;
 }
 
 button:hover {
@@ -87,35 +100,20 @@ button:hover {
     transform: translateY(-2px);
 }
 
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
 }
 
-li {
-    background: #f9fbff;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    transition: 0.2s;
-    border: 1px solid #e3eaf3;
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e3eaf3;
+    text-align: left;
 }
 
-li:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
-}
-
-li strong {
-    font-size: 16px;
-}
-
-li button {
-    margin-top: 10px;
-    background: #e74c3c;
-}
-
-li button:hover {
-    background: #c0392b;
+th {
+    background-color: #4a90e2;
+    color: white;
 }

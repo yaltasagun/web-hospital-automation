@@ -1,8 +1,9 @@
 class Patient {
-    constructor(firstName, lastName, idNumber) {
+    constructor(firstName, lastName, idNumber, gender) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.idNumber = idNumber;
+        this.gender = gender;
         this.appointments = [];
         this.treatments = [];
     }
@@ -10,95 +11,67 @@ class Patient {
 
 let patients = [];
 
-// Sayfa yüklendiğinde verileri yerel depolamadan çeker
-const loadPatients = async () => {
-    try {
-        const data = localStorage.getItem("patients");
-        patients = data ? JSON.parse(data) : [];
-        // Ana sayfada liste gösterimi kaldırıldığı için render() çağrısı silindi.
-    } catch (error) {
-        console.error("Error loading data:", error);
+const loadData = () => {
+    const data = localStorage.getItem("patients");
+    patients = data ? JSON.parse(data) : [];
+};
+
+const saveData = (list) => {
+    localStorage.setItem("patients", JSON.stringify(list));
+    loadData();
+};
+
+const handleAddPatient = () => {
+    const firstName = document.getElementById("firstName").value.trim();
+    const lastName = document.getElementById("lastName").value.trim();
+    const idNumber = document.getElementById("idNumber").value.trim();
+    
+    const genderElement = document.querySelector('input[name="gender"]:checked');
+    const gender = genderElement ? genderElement.value : null;
+
+    if (!firstName || !lastName || !idNumber || !gender) {
+        return alert("Please fill all fields, including gender!");
+    }
+
+    if (patients.find(p => p.idNumber === idNumber)) {
+        return alert("This ID is already registered.");
+    }
+
+    const newPatient = new Patient(firstName, lastName, idNumber, gender);
+    saveData([...patients, newPatient]);
+
+    document.getElementById("firstName").value = "";
+    document.getElementById("lastName").value = "";
+    document.getElementById("idNumber").value = "";
+    if(genderElement) genderElement.checked = false;
+    
+    alert("Patient registered!");
+};
+
+window.onload = () => {
+    loadData();
+
+    const addBtn = document.getElementById("addPatientBtn");
+    if (addBtn) addBtn.onclick = handleAddPatient;
+
+    const tableBody = document.getElementById("tableBody");
+    if (tableBody) {
+        renderTable(tableBody);
     }
 };
 
-// Güncel hasta listesini yerel depolamaya kaydeder
-const savePatients = async (updatedList) => {
-    patients = [...updatedList];
-    localStorage.setItem("patients", JSON.stringify(patients));
-    // Liste gösterimi artık sadece patients.html sayfasında yapılıyor.
-};
-
-const addPatient = async () => {
-    const patientData = {
-        firstName: document.getElementById("firstName").value.trim(),
-        lastName: document.getElementById("lastName").value.trim(),
-        idNumber: document.getElementById("idNumber").value.trim()
-    };
-
-    const { firstName, lastName, idNumber } = patientData;
-
-    if (!firstName || !lastName || !idNumber) return alert("All fields are required!");
-
-    if (patients.find(p => p.idNumber === idNumber)) return alert("This ID is already registered.");
-
-    const newPatient = new Patient(firstName, lastName, idNumber);
-    
-    await savePatients([...patients, newPatient]);
-    clearInputs();
-    alert("Patient registered successfully!");
-};
-
-const addAppointment = async () => {
-    const idNumber = document.getElementById("appointmentId").value.trim();
-    const date = document.getElementById("appointmentDate").value;
-
-    if (!idNumber || !date) return alert("Missing information!");
-
-    const patientExists = patients.find(p => p.idNumber === idNumber);
-    if (!patientExists) return alert("Patient not found!");
-
-    const updatedPatients = patients.map(p => {
-        if (p.idNumber === idNumber) {
-            return { ...p, appointments: [...p.appointments, date] };
-        }
-        return p;
-    });
-
-    await savePatients(updatedPatients);
-    alert("Appointment added!");
-};
-
-const addTreatment = async () => {
-    const idNumber = document.getElementById("treatmentId").value.trim();
-    const treatment = document.getElementById("treatmentDesc").value.trim();
-
-    if (!idNumber || !treatment) return alert("Missing information!");
-
-    const patientExists = patients.find(p => p.idNumber === idNumber);
-    if (!patientExists) return alert("Patient not found!");
-
-    const updatedPatients = patients.map(p => {
-        if (p.idNumber === idNumber) {
-            return { ...p, treatments: [...p.treatments, treatment] };
-        }
-        return p;
-    });
-
-    await savePatients(updatedPatients);
-    alert("Treatment recorded!");
-};
-
-const clearInputs = () => {
-    ["firstName", "lastName", "idNumber"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
+const renderTable = (container) => {
+    container.innerHTML = "";
+    patients.forEach(p => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${p.firstName} ${p.lastName}</td>
+            <td>${p.gender}</td>
+            <td>${p.idNumber}</td>
+            <td>${p.appointments.join(", ") || "None"}</td>
+            <td>${p.treatments.join(", ") || "None"}</td>
+            <td><button onclick="deleteRecord('${p.idNumber}')">Delete</button></td>
+        `;
+        container.appendChild(row);
     });
 };
-
-// Event Listeners
-document.getElementById("addPatientBtn").addEventListener("click", addPatient);
-document.getElementById("addAppointmentBtn").addEventListener("click", addAppointment);
-document.getElementById("addTreatmentBtn").addEventListener("click", addTreatment);
-
-// Başlangıçta verileri yükle
-loadPatients();
