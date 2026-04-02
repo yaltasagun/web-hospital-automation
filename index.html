@@ -1,43 +1,43 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hastane Otomasyonu</title>
+  <title>Hospital Management System</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header>Hospital Management Panel</header>
 
+  <nav style="padding: 10px 30px; background: #f0f4f8; text-align: center; display: flex; justify-content: center; gap: 20px;">
+    <a href="patients.html" style="color: #4a90e2; text-decoration: none; font-weight: bold;">📚 Patients List</a>
+    <a href="about.html" style="color: #4a90e2; text-decoration: none; font-weight: bold;">ℹ️ About</a>
+</nav>
+
 <div class="container">
 
   <div class="section">
-    <h2>Hasta Kayıt</h2>
-    <input id="ad" placeholder="Ad">
-    <input id="soyad" placeholder="Soyad">
-    <input id="tc" placeholder="TC">
-    <button id="hastaBtn">Kaydet</button>
+    <h2>Patient Registration</h2>
+    <input id="firstName" placeholder="First Name">
+    <input id="lastName" placeholder="Last Name">
+    <input id="idNumber" placeholder="ID Number">
+    <button id="addPatientBtn">Save</button>
   </div>
 
   <div class="section">
-    <h2>Randevu Ekle</h2>
-    <input id="randevuTc" placeholder="TC">
-    <input id="tarih" type="date">
-    <button id="randevuBtn">Randevu Ekle</button>
+    <h2>Add Appointment</h2>
+    <input id="appointmentId" placeholder="ID Number">
+    <input id="appointmentDate" type="date">
+    <button id="addAppointmentBtn">Add Appointment</button>
   </div>
 
   <div class="section">
-    <h2>Tedavi Geçmişi</h2>
-    <input id="tedaviTc" placeholder="TC">
-    <input id="tedavi" placeholder="Tedavi Açıklaması">
-    <button id="tedaviBtn">Ekle</button>
+    <h2>Treatment History</h2>
+    <input id="treatmentId" placeholder="ID Number">
+    <input id="treatmentDesc" placeholder="Treatment Description">
+    <button id="addTreatmentBtn">Add</button>
   </div>
-
-  <div class="section">
-    <h2>Patient List</h2>
-    <ul id="liste"></ul>
-  </div>
-
+  
 </div>
 
 <script src="script.js"></script>

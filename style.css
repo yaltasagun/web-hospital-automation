@@ -7,6 +7,13 @@ body {
     font-family: "Segoe UI", sans-serif;
     background: linear-gradient(135deg, #eef2f7, #dbe4f0);
     color: #2c3e50;
+    
+    background-image: url('hospital.png'); 
+    background-size: cover;
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-attachment: fixed; 
+
 }
 
 header {
@@ -17,6 +24,11 @@ header {
     font-weight: 600;
     letter-spacing: 0.5px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+nav {
+    text-align: center;
 }
 
 .container {
@@ -106,30 +118,4 @@ li button {
 
 li button:hover {
     background: #c0392b;
-}
-
-@media (prefers-color-scheme: dark) {
-    body {
-        background: #1e1f26;
-        color: #f0f0f0;
-    }
-
-    .section {
-        background: #2a2c36;
-    }
-
-    li {
-        background: #323440;
-        border-color: #444;
-    }
-
-    input {
-        background: #3b3d4a;
-        border-color: #555;
-        color: white;
-    }
-
-    header {
-        background: #357abd;
-    }
 }
