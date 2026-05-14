@@ -456,6 +456,24 @@ tbody tr:hover td       { background: var(--bg2); }
 }
 .form-input:focus { border-color: rgba(59,130,246,0.4); }
 .form-row    { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Wrapper grid for the new PatientForm — applied locally, doesn't affect Modal */
+.patient-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+}
+.form-group-full { grid-column: 1 / -1; }
+
+/* Validation error styles */
+.form-input.has-error  { border-color: var(--red); }
+.form-error  {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--red);
+  font-family: 'DM Mono', monospace;
+  margin-top: 2px;
+}
 .toggle-list { display: flex; flex-direction: column; gap: 12px; }
 .toggle-item { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
 .toggle      { position: relative; display: inline-block; width: 38px; height: 22px; }

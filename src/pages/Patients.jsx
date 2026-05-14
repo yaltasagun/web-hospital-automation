@@ -1,28 +1,23 @@
 import { useState, useMemo } from 'react';
-import Badge  from '../components/Badge';
-import Modal  from '../components/Modal';
+import Badge       from '../components/Badge';
+import PatientForm from '../components/PatientForm';
 import { PlusIcon, SearchIcon } from '../components/Icons';
-import { DEPARTMENTS, DOCTORS, STATUSES, BLOOD_GROUPS } from '../data/constants';
+import { DEPARTMENTS, STATUSES } from '../data/constants';
 
 const PAGE_SIZE = 10;
 
-const EMPTY_FORM = {
-  first: '', last: '', dept: '', doctor: '',
-  status: 'Admitted', blood: '', dob: '', phone: '', note: '',
-};
-
 export default function Patients({ patients, setPatients }) {
-  const [page,   setPage]   = useState(1);
-  const [search, setSearch] = useState('');
-  const [deptFilter, setDeptFilter] = useState('');
-  const [modal,  setModal]  = useState(false);
-  const [form,   setForm]   = useState(EMPTY_FORM);
+  const [page,        setPage]       = useState(1);
+  const [search,      setSearch]     = useState('');
+  const [deptFilter,  setDeptFilter] = useState('');
+  const [formOpen,    setFormOpen]   = useState(false);
 
-  // Filtered list
+  // ─── Filtered & paginated patient list ───────────────────
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return patients.filter(p => {
-      const nameMatch = `${p.first} ${p.last}`.toLowerCase().includes(q) || p.id.toLowerCase().includes(q);
+      const nameMatch = `${p.first} ${p.last}`.toLowerCase().includes(q) ||
+                        p.id.toLowerCase().includes(q);
       const deptMatch = !deptFilter || p.dept === deptFilter;
       return nameMatch && deptMatch;
     });
@@ -31,30 +26,17 @@ export default function Patients({ patients, setPatients }) {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const pageSlice  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const field = (key) => ({
-    value: form[key],
-    onChange: (e) => setForm(f => ({ ...f, [key]: e.target.value })),
-  });
-
-  const handleSave = () => {
-    if (!form.first || !form.last || !form.dept || !form.doctor) {
-      alert('Please fill in all required fields (*).');
-      return;
-    }
-    const age   = form.dob
-      ? new Date().getFullYear() - new Date(form.dob).getFullYear()
-      : Math.floor(Math.random() * 50) + 20;
-    const today = new Date().toLocaleDateString('en-US');
+  // ─── Add new patient (called by PatientForm) ─────────────
+  const handleAddPatient = (newPatientData) => {
     const newId = `PAT-${String(patients.length + 1).padStart(4, '0')}`;
-
-    setPatients(prev => [{ id: newId, ...form, age, date: today }, ...prev]);
-    setModal(false);
-    setForm(EMPTY_FORM);
+    const today = new Date().toLocaleDateString('en-US');
+    setPatients(prev => [{ id: newId, ...newPatientData, date: today }, ...prev]);
+    setFormOpen(false);
   };
 
   return (
     <div>
-      {/* Actions bar */}
+      {/* ─── Action bar ─── */}
       <div className="page-actions">
         <div className="filter-bar">
           <select
@@ -70,12 +52,12 @@ export default function Patients({ patients, setPatients }) {
             {STATUSES.map(s => <option key={s}>{s}</option>)}
           </select>
         </div>
-        <button className="btn-primary" onClick={() => setModal(true)}>
+        <button className="btn-primary" onClick={() => setFormOpen(true)}>
           <PlusIcon /> New Patient
         </button>
       </div>
 
-      {/* Table */}
+      {/* ─── Patient table ─── */}
       <div className="card table-card">
         <div className="table-hdr">
           <span className="card-title">Patient List</span>
@@ -126,7 +108,9 @@ export default function Patients({ patients, setPatients }) {
         </div>
 
         <div className="table-foot">
-          <span>{((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} / {filtered.length}</span>
+          <span>
+            {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} / {filtered.length}
+          </span>
           <div className="pagination">
             {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => (
               <button
@@ -141,68 +125,12 @@ export default function Patients({ patients, setPatients }) {
         </div>
       </div>
 
-      {/* New Patient Modal */}
-      <Modal
-        open={modal}
-        onClose={() => setModal(false)}
-        title="New Patient Registration"
-        footer={
-          <>
-            <button className="btn-ghost" onClick={() => setModal(false)}>Cancel</button>
-            <button className="btn-primary" onClick={handleSave}><PlusIcon /> Save</button>
-          </>
-        }
-      >
-        <div className="form-row">
-          <div className="form-group"><label>First Name *</label><input className="form-input" {...field('first')} placeholder="First name" /></div>
-          <div className="form-group"><label>Last Name *</label><input  className="form-input" {...field('last')}  placeholder="Last name"  /></div>
-        </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label>Date of Birth</label>
-            <input className="form-input" type="date" {...field('dob')} />
-          </div>
-          <div className="form-group">
-            <label>Blood Type</label>
-            <select className="form-input" {...field('blood')}>
-              <option value="">Select</option>
-              {BLOOD_GROUPS.map(b => <option key={b}>{b}</option>)}
-            </select>
-          </div>
-        </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label>Department *</label>
-            <select className="form-input" {...field('dept')}>
-              <option value="">Select</option>
-              {DEPARTMENTS.map(d => <option key={d}>{d}</option>)}
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Doctor *</label>
-            <select className="form-input" {...field('doctor')}>
-              <option value="">Select</option>
-              {DOCTORS.map(d => <option key={d}>{d}</option>)}
-            </select>
-          </div>
-        </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label>Status</label>
-            <select className="form-input" {...field('status')}>
-              {STATUSES.map(s => <option key={s}>{s}</option>)}
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Phone</label>
-            <input className="form-input" {...field('phone')} placeholder="+1 (555) 000-0000" />
-          </div>
-        </div>
-        <div className="form-group">
-          <label>Complaint / Diagnosis</label>
-          <textarea className="form-input" rows="3" {...field('note')} placeholder="Symptoms and notes..." />
-        </div>
-      </Modal>
+      {/* ─── New Patient form (manages its own state + modal) ─── */}
+      <PatientForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSubmit={handleAddPatient}
+      />
     </div>
   );
 }
