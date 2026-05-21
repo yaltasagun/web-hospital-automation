@@ -532,6 +532,27 @@ tbody tr:hover td       { background: var(--bg2); }
 .notif-body p      { font-size: 11px; color: var(--text1); margin-bottom: 2px; }
 .notif-body span   { font-size: 10px; color: var(--text2); font-family: 'DM Mono', monospace; }
 
+/* ── LANGUAGE SWITCH BUTTON ──────────────────── */
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all var(--trans);
+}
+.lang-btn:hover   { border-color: var(--border2); }
+.lang-active      { color: var(--blue); }
+.lang-inactive    { color: var(--text2); }
+.lang-divider     { color: var(--text2); font-weight: 300; }
+
 /* ── ANIMATIONS ──────────────────────────────── */
 @keyframes fadeUp    { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 @keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }

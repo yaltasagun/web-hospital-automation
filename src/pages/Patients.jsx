@@ -1,23 +1,27 @@
 import { useState, useMemo } from 'react';
-import Badge       from '../components/Badge';
-import PatientForm from '../components/PatientForm';
+import Badge          from '../components/Badge';
+import PatientForm    from '../components/PatientForm';
+import PatientProfile from './clinical/PatientProfile';
 import { PlusIcon, SearchIcon } from '../components/Icons';
 import { DEPARTMENTS, STATUSES } from '../data/constants';
+import { useLang } from '../i18n/LangContext';
 
 const PAGE_SIZE = 10;
 
 export default function Patients({ patients, setPatients }) {
+  const { t } = useLang();
+  const pt = t.patients;
+
   const [page,        setPage]       = useState(1);
   const [search,      setSearch]     = useState('');
   const [deptFilter,  setDeptFilter] = useState('');
   const [formOpen,    setFormOpen]   = useState(false);
+  const [profilePat,  setProfilePat] = useState(null);
 
-  // ─── Filtered & paginated patient list ───────────────────
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return patients.filter(p => {
-      const nameMatch = `${p.first} ${p.last}`.toLowerCase().includes(q) ||
-                        p.id.toLowerCase().includes(q);
+      const nameMatch = `${p.first} ${p.last}`.toLowerCase().includes(q) || p.id.toLowerCase().includes(q);
       const deptMatch = !deptFilter || p.dept === deptFilter;
       return nameMatch && deptMatch;
     });
@@ -26,52 +30,49 @@ export default function Patients({ patients, setPatients }) {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const pageSlice  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  // ─── Add new patient (called by PatientForm) ─────────────
-  const handleAddPatient = (newPatientData) => {
+  const handleAddPatient = (data) => {
     const newId = `PAT-${String(patients.length + 1).padStart(4, '0')}`;
     const today = new Date().toLocaleDateString('en-US');
-    setPatients(prev => [{ id: newId, ...newPatientData, date: today }, ...prev]);
+    setPatients(prev => [{ id: newId, ...data, date: today }, ...prev]);
     setFormOpen(false);
   };
 
+  if (profilePat) {
+    return <PatientProfile patient={profilePat} onBack={() => setProfilePat(null)} />;
+  }
+
   return (
     <div>
-      {/* ─── Action bar ─── */}
       <div className="page-actions">
         <div className="filter-bar">
-          <select
-            className="filter-select"
-            value={deptFilter}
-            onChange={e => { setDeptFilter(e.target.value); setPage(1); }}
-          >
-            <option value="">All Departments</option>
+          <select className="filter-select" value={deptFilter} onChange={e => { setDeptFilter(e.target.value); setPage(1); }}>
+            <option value="">{t.common.allDepts}</option>
             {DEPARTMENTS.map(d => <option key={d}>{d}</option>)}
           </select>
           <select className="filter-select">
-            <option value="">All Statuses</option>
+            <option value="">{t.common.allStatuses}</option>
             {STATUSES.map(s => <option key={s}>{s}</option>)}
           </select>
         </div>
         <button className="btn-primary" onClick={() => setFormOpen(true)}>
-          <PlusIcon /> New Patient
+          <PlusIcon /> {pt.newBtn}
         </button>
       </div>
 
-      {/* ─── Patient table ─── */}
       <div className="card table-card">
         <div className="table-hdr">
-          <span className="card-title">Patient List</span>
+          <span className="card-title">{pt.title}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div className="search-wrap" style={{ padding: '5px 10px' }}>
               <SearchIcon />
               <input
-                placeholder="Search patients..."
+                placeholder={pt.searchPlaceholder}
                 value={search}
                 onChange={e => { setSearch(e.target.value); setPage(1); }}
                 style={{ width: '150px' }}
               />
             </div>
-            <span className="tbl-count">{filtered.length} patients</span>
+            <span className="tbl-count">{pt.count(filtered.length)}</span>
           </div>
         </div>
 
@@ -79,9 +80,9 @@ export default function Patients({ patients, setPatients }) {
           <table>
             <thead>
               <tr>
-                <th>Patient ID</th><th>Full Name</th><th>Age</th>
-                <th>Department</th><th>Doctor</th><th>Status</th>
-                <th>Admission</th><th>Actions</th>
+                <th>{pt.cols.id}</th><th>{pt.cols.name}</th><th>{pt.cols.age}</th>
+                <th>{pt.cols.dept}</th><th>{pt.cols.doctor}</th><th>{pt.cols.status}</th>
+                <th>{pt.cols.admission}</th><th>{pt.cols.actions}</th>
               </tr>
             </thead>
             <tbody>
@@ -92,13 +93,13 @@ export default function Patients({ patients, setPatients }) {
                   <td>{p.age}</td>
                   <td>{p.dept}</td>
                   <td>{p.doctor}</td>
-                  <td><Badge value={p.status} /></td>
+                  <td><Badge value={t.status[statusKey(p.status)]} /></td>
                   <td><span style={{ fontFamily: 'DM Mono,monospace', fontSize: '11px', color: '#94a3b8' }}>{p.date}</span></td>
                   <td>
                     <div className="tbl-actions">
-                      <button className="tbl-btn">View</button>
-                      <button className="tbl-btn">Edit</button>
-                      <button className="tbl-btn danger">Delete</button>
+                      <button className="tbl-btn" onClick={() => setProfilePat(p)}>{t.common.view}</button>
+                      <button className="tbl-btn">{t.common.edit}</button>
+                      <button className="tbl-btn danger">{t.common.delete}</button>
                     </div>
                   </td>
                 </tr>
@@ -108,16 +109,10 @@ export default function Patients({ patients, setPatients }) {
         </div>
 
         <div className="table-foot">
-          <span>
-            {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} / {filtered.length}
-          </span>
+          <span>{pt.showing(((page - 1) * PAGE_SIZE) + 1, Math.min(page * PAGE_SIZE, filtered.length), filtered.length)}</span>
           <div className="pagination">
             {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => (
-              <button
-                key={i}
-                className={`pg-btn${page === i + 1 ? ' active' : ''}`}
-                onClick={() => setPage(i + 1)}
-              >
+              <button key={i} className={`pg-btn${page === i + 1 ? ' active' : ''}`} onClick={() => setPage(i + 1)}>
                 {i + 1}
               </button>
             ))}
@@ -125,12 +120,12 @@ export default function Patients({ patients, setPatients }) {
         </div>
       </div>
 
-      {/* ─── New Patient form (manages its own state + modal) ─── */}
-      <PatientForm
-        open={formOpen}
-        onClose={() => setFormOpen(false)}
-        onSubmit={handleAddPatient}
-      />
+      <PatientForm open={formOpen} onClose={() => setFormOpen(false)} onSubmit={handleAddPatient} />
     </div>
   );
+}
+
+function statusKey(s) {
+  const map = { 'Admitted': 'admitted', 'Follow-up': 'followUp', 'Discharged': 'discharged' };
+  return map[s] || 'admitted';
 }

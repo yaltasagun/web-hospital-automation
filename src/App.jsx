@@ -1,37 +1,40 @@
 import { useState } from 'react';
 
-// Layout components
 import Sidebar             from './components/Sidebar';
 import Topbar              from './components/Topbar';
 import NotificationPanel,
      { INITIAL_NOTIFICATIONS } from './components/NotificationPanel';
 
-// Pages
-import Dashboard    from './pages/Dashboard';
-import Patients     from './pages/Patients';
-import Appointments from './pages/Appointments';
-import Doctors      from './pages/Doctors';
-import Laboratory   from './pages/Laboratory';
-import Pharmacy     from './pages/Pharmacy';
-import Reports      from './pages/Reports';
-import Financial    from './pages/Financial';
-import Settings     from './pages/Settings';
+import Dashboard      from './pages/Dashboard';
+import Patients       from './pages/Patients';
+import Appointments   from './pages/Appointments';
+import Doctors        from './pages/Doctors';
+import Laboratory     from './pages/Laboratory';
+import Pharmacy       from './pages/Pharmacy';
+import Reports        from './pages/Reports';
+import Financial      from './pages/Financial';
+import Settings       from './pages/Settings';
 
-// Hooks & data
+import Prescriptions  from './pages/clinical/Prescriptions';
+import SurgerySchedule from './pages/clinical/SurgerySchedule';
+import DischargeSummary from './pages/clinical/DischargeSummary';
+import BedManagement  from './pages/clinical/BedManagement';
+
 import useTheme from './hooks/useTheme';
 import { generatePatients, generateAppointments } from './data/generators';
 
-// ─────────────────────────────────────────────
-//  Page router
-// ─────────────────────────────────────────────
 function PageContent({ page, patients, setPatients, appointments, setAppointments, theme, setTheme }) {
   switch (page) {
     case 'dashboard':    return <Dashboard />;
-    case 'patients':     return <Patients     patients={patients}         setPatients={setPatients} />;
+    case 'patients':     return <Patients patients={patients} setPatients={setPatients} />;
     case 'appointments': return <Appointments appointments={appointments} setAppointments={setAppointments} />;
     case 'doctors':      return <Doctors />;
     case 'laboratory':   return <Laboratory />;
     case 'pharmacy':     return <Pharmacy />;
+    case 'prescriptions':return <Prescriptions />;
+    case 'surgery':      return <SurgerySchedule />;
+    case 'discharge':    return <DischargeSummary />;
+    case 'beds':         return <BedManagement />;
     case 'reports':      return <Reports />;
     case 'financial':    return <Financial />;
     case 'settings':     return <Settings theme={theme} setTheme={setTheme} />;
@@ -39,9 +42,6 @@ function PageContent({ page, patients, setPatients, appointments, setAppointment
   }
 }
 
-// ─────────────────────────────────────────────
-//  App
-// ─────────────────────────────────────────────
 export default function App() {
   const [page,         setPage]        = useState('dashboard');
   const [collapsed,    setCollapsed]   = useState(false);
@@ -55,21 +55,14 @@ export default function App() {
 
   const handleNavigate = (pageId) => {
     setPage(pageId);
-    setNotifOpen(false); // close notifs on navigation
+    setNotifOpen(false);
   };
 
   return (
     <div className="app-shell">
-      {/* Sidebar */}
-      <Sidebar
-        activePage={page}
-        onNavigate={handleNavigate}
-        collapsed={collapsed}
-      />
+      <Sidebar activePage={page} onNavigate={handleNavigate} collapsed={collapsed} />
 
-      {/* Main area */}
       <div className="main">
-        {/* Top bar */}
         <Topbar
           activePage={page}
           search={search}
@@ -80,12 +73,8 @@ export default function App() {
           collapsed={collapsed}
         />
 
-        {/* Notification panel (conditionally rendered) */}
-        {notifOpen && (
-          <NotificationPanel onClose={() => setNotifOpen(false)} />
-        )}
+        {notifOpen && <NotificationPanel onClose={() => setNotifOpen(false)} />}
 
-        {/* Page content */}
         <div className="page-area">
           <PageContent
             page={page}

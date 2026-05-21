@@ -1,34 +1,37 @@
 import { PlusIcon } from '../components/Icons';
 import { PHARMACY_DATA, PRESCRIPTIONS } from '../data/constants';
+import { useLang } from '../i18n/LangContext';
 
 export default function Pharmacy() {
+  const { t } = useLang();
+  const ph = t.pharmacy;
+
   return (
     <div>
       <div className="page-actions">
         <div className="filter-bar">
           <select className="filter-select">
-            <option>All Medications</option>
-            <option>Antibiotics</option>
-            <option>Analgesics</option>
-            <option>Vitamins</option>
+            <option>{ph.allMedications}</option>
+            <option>{ph.antibiotics}</option>
+            <option>{ph.analgesics}</option>
+            <option>{ph.vitamins}</option>
           </select>
         </div>
-        <button className="btn-primary"><PlusIcon /> Write Prescription</button>
+        <button className="btn-primary"><PlusIcon /> {ph.prescriptionBtn}</button>
       </div>
 
       <div className="pharm-grid">
-        {/* Inventory table */}
         <div className="card table-card">
           <div className="table-hdr">
-            <span className="card-title">Inventory Status</span>
-            <span className="tbl-count">{PHARMACY_DATA.length} items</span>
+            <span className="card-title">{ph.inventoryTitle}</span>
+            <span className="tbl-count">{PHARMACY_DATA.length}</span>
           </div>
           <div className="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Medication</th><th>Category</th><th>Stock</th>
-                  <th>Min Stock</th><th>Unit Price</th><th>Status</th>
+                  <th>{ph.cols.medication}</th><th>{ph.cols.category}</th><th>{ph.cols.stock}</th>
+                  <th>{ph.cols.minStock}</th><th>{ph.cols.unitPrice}</th><th>{ph.cols.status}</th>
                 </tr>
               </thead>
               <tbody>
@@ -38,16 +41,13 @@ export default function Pharmacy() {
                     <tr key={i}>
                       <td><strong>{med.name}</strong></td>
                       <td>{med.category}</td>
-                      <td style={{ color: low ? 'var(--red)' : 'inherit', fontWeight: low ? 700 : 400, fontFamily: 'DM Mono,monospace' }}>
-                        {med.stock}
-                      </td>
+                      <td style={{ color: low ? 'var(--red)' : 'inherit', fontWeight: low ? 700 : 400, fontFamily: 'DM Mono,monospace' }}>{med.stock}</td>
                       <td style={{ fontFamily: 'DM Mono,monospace', color: '#94a3b8' }}>{med.min}</td>
                       <td style={{ fontFamily: 'DM Mono,monospace' }}>${med.price.toFixed(2)}</td>
                       <td>
                         {low
-                          ? <span className="badge badge-low">Low Stock</span>
-                          : <span className="badge badge-instock">In Stock</span>
-                        }
+                          ? <span className="badge badge-low">{ph.lowStock}</span>
+                          : <span className="badge badge-instock">{ph.inStock}</span>}
                       </td>
                     </tr>
                   );
@@ -57,11 +57,8 @@ export default function Pharmacy() {
           </div>
         </div>
 
-        {/* Recent prescriptions */}
         <div className="card">
-          <div className="card-header">
-            <span className="card-title">Recent Prescriptions</span>
-          </div>
+          <div className="card-header"><span className="card-title">{ph.prescriptionsTitle}</span></div>
           {PRESCRIPTIONS.map((rx, i) => (
             <div key={i} className="rx-item">
               <strong>{rx.patient}</strong>

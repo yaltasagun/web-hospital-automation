@@ -72,6 +72,10 @@ export const NAV_ITEMS = [
   { id: 'doctors',      label: 'Doctors',      group: 'MAIN MENU'  },
   { id: 'laboratory',   label: 'Laboratory',   group: 'MAIN MENU'  },
   { id: 'pharmacy',     label: 'Pharmacy',     group: 'MAIN MENU'  },
+  { id: 'prescriptions',label: 'Prescriptions',group: 'CLINICAL'   },
+  { id: 'surgery',      label: 'Surgery',      group: 'CLINICAL',   badge: '6', badgeAccent: true },
+  { id: 'discharge',    label: 'Discharge',    group: 'CLINICAL'   },
+  { id: 'beds',         label: 'Beds',         group: 'CLINICAL'   },
   { id: 'reports',      label: 'Reports',      group: 'MANAGEMENT' },
   { id: 'financial',    label: 'Financial',    group: 'MANAGEMENT' },
   { id: 'settings',     label: 'Settings',     group: 'MANAGEMENT' },
@@ -90,12 +94,12 @@ export const PAGE_TITLES = {
 };
 
 export const DEPT_OCCUPANCY = [
-  { name: 'Internal Medicine', pct: 78, color: '#3b82f6' },
-  { name: 'Cardiology',        pct: 91, color: '#ef4444' },
-  { name: 'Neurology',         pct: 55, color: '#10b981' },
-  { name: 'Orthopedics',       pct: 62, color: '#f59e0b' },
-  { name: 'Pediatrics',        pct: 44, color: '#8b5cf6' },
-  { name: 'Emergency',         pct: 83, color: '#f97316' },
+  { name: 'Internal Medicine', nameTr: 'Dahiliye',    pct: 78, color: '#3b82f6' },
+  { name: 'Cardiology',        nameTr: 'Kardiyoloji', pct: 91, color: '#ef4444' },
+  { name: 'Neurology',         nameTr: 'Nöroloji',    pct: 55, color: '#10b981' },
+  { name: 'Orthopedics',       nameTr: 'Ortopedi',    pct: 62, color: '#f59e0b' },
+  { name: 'Pediatrics',        nameTr: 'Pediatri',    pct: 44, color: '#8b5cf6' },
+  { name: 'Emergency',         nameTr: 'Acil Servis', pct: 83, color: '#f97316' },
 ];
 
 export const RECENT_ACTIVITY = [

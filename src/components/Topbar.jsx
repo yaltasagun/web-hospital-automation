@@ -1,17 +1,10 @@
-import { PAGE_TITLES } from '../data/constants';
+import { useLang } from '../i18n/LangContext';
 import { SearchIcon, BellIcon, MenuIcon } from './Icons';
 
 /**
  * Top navigation bar.
- *
- * Props:
- *   activePage    {string}   - Current page id for title lookup
- *   search        {string}   - Controlled search input value
- *   onSearchChange{function} - Called with new search string
- *   hasUnread     {boolean}  - Whether notification dot should be shown
- *   onNotifClick  {function} - Opens / closes notification panel
- *   onToggleSidebar {function} - Collapses / expands sidebar
- *   collapsed     {boolean}  - Current sidebar state
+ * Props: activePage, search, onSearchChange, hasUnread,
+ *        onNotifClick, onToggleSidebar, collapsed
  */
 export default function Topbar({
   activePage,
@@ -22,39 +15,49 @@ export default function Topbar({
   onToggleSidebar,
   collapsed,
 }) {
-  const dateStr = new Date().toLocaleDateString('en-US', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-  });
+  const { t, lang, setLang } = useLang();
+
+  const dateStr = new Date().toLocaleDateString(
+    lang === 'tr' ? 'tr-TR' : 'en-US',
+    { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  );
 
   return (
     <header className="topbar">
       <div className="topbar-left">
-        <div className="topbar-title">{PAGE_TITLES[activePage] || 'Dashboard'}</div>
+        <div className="topbar-title">{t.pages[activePage] || t.pages.dashboard}</div>
         <div className="topbar-date">{dateStr}</div>
       </div>
 
       <div className="topbar-right">
-        {/* Global search */}
         <div className="search-wrap">
           <SearchIcon />
           <input
-            placeholder="Search patients, doctors..."
+            placeholder={t.topbar.searchPlaceholder}
             value={search}
             onChange={e => onSearchChange(e.target.value)}
           />
         </div>
 
-        {/* Notification bell */}
+        <button
+          className="lang-btn"
+          onClick={() => setLang(l => l === 'en' ? 'tr' : 'en')}
+          title={lang === 'en' ? 'Turkce' : 'English'}
+        >
+          <span className={lang === 'en' ? 'lang-active' : 'lang-inactive'}>EN</span>
+          <span className="lang-divider">|</span>
+          <span className={lang === 'tr' ? 'lang-active' : 'lang-inactive'}>TR</span>
+        </button>
+
         <button className="icon-btn" onClick={onNotifClick}>
           <BellIcon />
           {hasUnread && <span className="notif-dot" />}
         </button>
 
-        {/* Sidebar collapse toggle */}
         <button className="collapse-btn" onClick={onToggleSidebar}>
           <MenuIcon />
           <span style={{ fontFamily: 'DM Mono, monospace' }}>
-            {collapsed ? 'Expand' : 'Collapse'}
+            {collapsed ? t.topbar.expand : t.topbar.collapse}
           </span>
         </button>
       </div>
